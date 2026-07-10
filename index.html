@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Froggy Pomodoro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<!-- LOTUS WALLPAPER -->
+<div class="lotus-bg">
+    <div>🪷</div><div>🌸</div><div>🪷</div><div>🌸</div><div>🪷</div><div>🌸</div><div>🪷</div><div>🌸</div>
+    <div>🌸</div><div>🪷</div><div>🌸</div><div>🪷</div><div>🌸</div><div>🪷</div><div>🌸</div><div>🪷</div>
+    <div>🪷</div><div>🌸</div><div>🪷</div><div>🌸</div><div>🪷</div><div>🌸</div><div>🪷</div><div>🌸</div>
+    <div>🌸</div><div>🪷</div><div>🌸</div><div>🪷</div><div>🌸</div><div>🪷</div><div>🌸</div><div>🪷</div>
+    <div>🪷</div><div>🌸</div><div>🪷</div><div>🌸</div><div>🪷</div><div>🌸</div><div>🪷</div><div>🌸</div>
+</div>
+
+<!-- WELCOME / LOGIN / SIGNUP OVERLAY -->
+<div class="welcome-overlay" id="welcomeOverlay">
+    <div class="welcome-box">
+        <div class="welcome-title">🪷 Welcome to Pomofrog 🪷</div>
+        <div class="welcome-sub">Pick a profile or create a new one!</div>
+        <div class="profile-list" id="profileList"></div>
+        <button class="welcome-add" onclick="openSignup()">+ Create New Profile</button>
+    </div>
+</div>
+
+<!-- SIGN UP MODAL -->
+<div class="signup-overlay" id="signupOverlay">
+    <div class="welcome-box">
+        <button class="shop-close" onclick="closeSignup()">✕</button>
+        <div class="welcome-title">✨ Create Your Profile ✨</div>
+        <label class="signup-label">Pick your avatar:</label>
+        <div class="avatar-grid" id="avatarGrid"></div>
+        <label class="signup-label">Your name:</label>
+        <input type="text" id="signupName" class="signup-input" placeholder="e.g. Aliya" maxlength="20">
+        <label class="signup-label">Password (required):</label>
+        <input type="password" id="signupPass" class="signup-input" placeholder="pick a password" maxlength="30">
+        <button class="signup-confirm" onclick="createProfile()">Create Profile 🌸</button>
+    </div>
+</div>
+
+<!-- LOGIN PASSWORD MODAL -->
+<div class="login-overlay" id="loginOverlay">
+    <div class="welcome-box">
+        <button class="shop-close" onclick="closeLogin()">✕</button>
+        <div class="welcome-title" id="loginTitle">🔒 Enter Password</div>
+        <input type="password" id="loginPass" class="signup-input" placeholder="password" maxlength="30">
+        <button class="signup-confirm" onclick="confirmLogin()">Log In 💗</button>
+        <div class="login-error" id="loginError"></div>
+    </div>
+</div>
+
+<!-- PROFILE BUTTON (when logged in) -->
+<button class="profile-btn" id="profileBtn" onclick="openProfile()" title="Your profile">
+    <span class="profile-btn-avatar" id="profileBtnAvatar">🐸</span>
+    <span class="profile-btn-name" id="profileBtnName">User</span>
+</button>
+
+<!-- PROFILE MODAL -->
+<div class="profile-overlay" id="profileOverlay">
+    <div class="shop-modal profile-modal">
+        <button class="shop-close" onclick="closeProfile()">✕</button>
+        <div class="profile-header">
+            <div class="profile-big-avatar" id="profileBigAvatar">🐸</div>
+            <div class="profile-name" id="profileName">User</div>
+            <div class="profile-since" id="profileSince">Member since today</div>
+        </div>
+        <div class="profile-stats" id="profileStats"></div>
+        <div class="profile-actions">
+            <button class="profile-edit" onclick="changeAvatar()">🎨 Change Avatar</button>
+            <button class="profile-logout" onclick="logoutProfile()">🚪 Log Out</button>
+        </div>
+    </div>
+</div>
+
+<!-- COIN COUNTER -->
+<div class="coin-tab">
+    <div class="coin"></div>
+    <span><span id="coinCount">0</span> coins</span>
+</div>
+
+<!-- STATS BUTTON -->
+<button class="stats-btn" onclick="openStats()" title="View your stats">📊</button>
+
+<!-- STREAK BADGE -->
+<div class="streak-badge" id="streakBadge" title="Daily streak">🔥 <span id="streakCount">0</span></div>
+
+<!-- STATS MODAL -->
+<div class="stats-overlay" id="statsOverlay">
+    <div class="shop-modal stats-modal">
+        <button class="shop-close" onclick="closeStats()">✕</button>
+        <div class="shop-title">📊 Your Stats 📊</div>
+        <div class="stats-content" id="statsContent"></div>
+    </div>
+</div>
+
+<!-- LEARN ABOUT THE FROG BUTTON -->
+<button class="learn-btn" onclick="openLearn()">
+    <span class="learn-frog">🐸</span>
+    <span>Learn About the Frog</span>
+</button>
+
+<!-- MUSIC BUTTON -->
+<button class="music-btn" onclick="openMusic()">
+    <span class="music-icon">🎵</span>
+    <span>Music</span>
+</button>
+
+<!-- BACKGROUND BUTTON -->
+<button class="bg-btn" onclick="openBgShop()">
+    <span class="bg-icon">🖼️</span>
+    <span>Background</span>
+</button>
+
+<!-- MUSIC MODAL -->
+<div class="music-overlay" id="musicOverlay">
+    <div class="shop-modal music-shop-modal">
+        <button class="shop-close" onclick="closeMusic()">✕</button>
+        <div class="shop-title">🎵 Music Shop 🎵</div>
+        <p class="shop-subtext">Spend your coins on cozy study tunes!</p>
+        <div class="music-grid" id="musicGrid"></div>
+    </div>
+</div>
+
+<!-- BACKGROUND MODAL -->
+<div class="bg-overlay" id="bgOverlay">
+    <div class="shop-modal bg-shop-modal">
+        <button class="shop-close" onclick="closeBgShop()">✕</button>
+        <div class="shop-title">🖼️ Background Shop 🖼️</div>
+        <p class="shop-subtext">Spend your coins to unlock pretty new backgrounds!</p>
+        <div class="bg-grid" id="bgGrid"></div>
+    </div>
+</div>
+
+<!-- LEARN ABOUT THE FROG MODAL -->
+<div class="learn-overlay" id="learnOverlay">
+    <div class="learn-modal">
+        <button class="learn-close" onclick="closeLearn()">✕</button>
+        <div class="learn-title">🪷 Meet <span id="creatureName">Lilypad</span> 🪷 <button class="rename-btn" onclick="renameCreature()" title="Rename your friend!">✏️</button></div>
+        <div class="learn-text">
+            <p>Meet <b>Lilypad the Frog</b> 🐸, your cheerful study buddy in <b>Pomofrog™</b>!</p>
+
+            <p>With Lilypad, you can choose from:</p>
+            <ul class="learn-list">
+                <li><b>Pomodoro Timer</b> – stay focused and productive.</li>
+                <li><b>Short Break</b> – take a moment to stretch and recharge.</li>
+                <li><b>Long Break</b> – grab a snack, use the bathroom, or relax for a bit.</li>
+            </ul>
+            <p>You can start, pause, and reset the timer whenever you need.</p>
+
+            <h3>✨ Special Timer Options</h3>
+            <ul class="learn-list">
+                <li>The <b>heart button</b> starts a quick 5-second timer.</li>
+                <li>The <b>lavender lotus button</b> lets you choose your own custom timer length.</li>
+            </ul>
+
+            <h3>📝 Froggy To-Do</h3>
+            <p>Keep track of your tasks with the Froggy To-Do list! Add tasks, check them off when you're done, and clear completed items to stay organized.</p>
+
+            <h3>🎮 Flappy Frog</h3>
+            <p>Need a fun break? Play Flappy Frog during your short or long breaks and see how high you can score!</p>
+
+            <h3>🐸 Grow Your Pond</h3>
+            <p>Every time you complete a <b>25-minute Pomodoro session</b> (Pomodoro mode only — not short break, long break, or 5-second timers!), a new frog appears in your pond! Visit <b>Check Your Pond</b> to see your growing collection of frog friends.</p>
+
+            <h3>💰 Cash Out & Shop</h3>
+            <p>Tap <b>Cash Out Your Frogs!</b> in your pond — for every <b>5 frogs</b>, you earn <b>1 coin</b> 💛! Then spend your coins in the <b>Music</b> 🎵 and <b>Background</b> 🖼️ shops to unlock new tunes and pretty backgrounds for Pomofrog!</p>
+
+            <p class="learn-outro">Have fun staying focused, collecting frogs, and earning coins with <b>Pomofrog™</b>! 💗🐸🌸</p>
+        </div>
+    </div>
+</div>
+
+<!-- SWITCH THEME BUTTON -->
+<button class="theme-btn" onclick="switchTheme()">
+    <span class="theme-icon">🐻‍❄️</span>
+    <span class="theme-label">Switch Theme</span>
+</button>
+
+<!-- FLAPPY BIRD BUTTON -->
+<button class="flappy-btn" onclick="openFlappy()">
+    <span class="flappy-frog">🐸</span>
+    <span>Flappy Frog</span>
+</button>
+
+<!-- MINI GAMES BUTTON -->
+<button class="games-btn" onclick="openGamesMenu()">
+    <span class="games-icon">🎮</span>
+    <span>Mini Games</span>
+</button>
+
+<!-- GAMES MENU MODAL -->
+<div class="games-overlay" id="gamesOverlay">
+    <div class="shop-modal">
+        <button class="shop-close" onclick="closeGamesMenu()">✕</button>
+        <div class="shop-title">🎮 Mini Games 🎮</div>
+        <div class="games-list">
+            <button class="game-choice" id="memoryGameChoice" onclick="startMemory()">🧠 Memory Match<span>Match pairs of cute cards</span></button>
+            <button class="game-choice" id="catchflyGameChoice" onclick="startCatchFly()">🪰 Catch the Fly<span>Click flies fast to score!</span></button>
+        </div>
+    </div>
+</div>
+
+<!-- MEMORY MATCH MODAL -->
+<div class="memory-overlay" id="memoryOverlay">
+    <div class="shop-modal memory-modal">
+        <button class="shop-close" onclick="closeMemory()">✕</button>
+        <div class="shop-title">🧠 Memory Match 🧠</div>
+        <div class="memory-stats">
+            <span>Moves: <b id="memoryMoves">0</b></span>
+            <span>Matched: <b id="memoryMatched">0</b>/8</span>
+            <button class="memory-restart" onclick="startMemory()">🔄 Restart</button>
+        </div>
+        <div class="memory-grid" id="memoryGrid"></div>
+        <div class="memory-win" id="memoryWin" style="display:none;">🎉 You won! 🎉</div>
+    </div>
+</div>
+
+<!-- CATCH THE FLY MODAL -->
+<div class="catchfly-overlay" id="catchflyOverlay">
+    <div class="shop-modal catchfly-modal">
+        <button class="shop-close" onclick="closeCatchFly()">✕</button>
+        <div class="shop-title" id="catchflyTitle">🪰 Catch the Fly 🪰</div>
+        <div class="catchfly-stats">
+            <span>Score: <b id="catchflyScore">0</b></span>
+            <span>Time: <b id="catchflyTime">30</b>s</span>
+            <button class="memory-restart" onclick="startCatchFly()">🔄 Restart</button>
+        </div>
+        <div class="catchfly-arena" id="catchflyArena"></div>
+        <div class="memory-win" id="catchflyWin" style="display:none;"></div>
+    </div>
+</div>
+
+<!-- POND BUTTON -->
+<button class="pond-btn" onclick="openPond()">
+    <span class="pond-icon">🪷</span>
+    <span>Check Your Pond</span>
+</button>
+
+<!-- POND MODAL -->
+<div class="pond-overlay" id="pondOverlay">
+    <div class="pond-modal">
+        <button class="pond-close" onclick="closePond()">✕</button>
+        <div class="pond-title">🪷 Your Pond 🪷</div>
+        <div class="pond-count">🐸 <span id="pondCount">0</span> frogs in your pond!</div>
+        <div class="pond" id="pond"></div>
+        <div class="garden-section">
+            <div class="garden-title">🌷 Your Garden</div>
+            <div class="garden-plot" id="gardenPlot"></div>
+        </div>
+        <button class="cash-btn" onclick="cashOutFrogs()">💰 Cash Out Your Frogs!</button>
+        <div class="pond-hint">5 frogs = 1 coin 💛 · Each Pomodoro adds a frog + a flower!</div>
+    </div>
+</div>
+
+<!-- FLAPPY BIRD MODAL -->
+<div class="flappy-overlay" id="flappyOverlay">
+    <div class="flappy-modal">
+        <button class="flappy-close" onclick="closeFlappy()">✕</button>
+        <div class="flappy-title">🐸 Flappy Frog 🐸</div>
+        <div class="flappy-scores">
+            <div class="flappy-score">Score: <span id="flappyScore">0</span></div>
+            <div class="flappy-highscore">🏆 Best: <span id="flappyHighScore">0</span></div>
+        </div>
+        <canvas id="flappyCanvas" width="280" height="400"></canvas>
+        <div class="flappy-hint">Click or press Space to flap!</div>
+        <div class="flappy-times-up" id="flappyTimesUp">TIME'S UP!<br>GO FOCUS NOW!</div>
+    </div>
+</div>
+
+
+<!-- KEYPAD POPUP -->
+<div class="keypad-overlay" id="keypadOverlay">
+    <div class="keypad-modal">
+        <button class="keypad-close" onclick="closeKeypad()">✕</button>
+
+        <div class="keypad-title">🪷 Set Your Time 🪷</div>
+
+        <div class="keypad-display" id="keypadDisplay">0 min</div>
+
+        <div class="keypad-grid">
+            <button onclick="keypadInput('1')">1</button>
+            <button onclick="keypadInput('2')">2</button>
+            <button onclick="keypadInput('3')">3</button>
+            <button onclick="keypadInput('4')">4</button>
+            <button onclick="keypadInput('5')">5</button>
+            <button onclick="keypadInput('6')">6</button>
+            <button onclick="keypadInput('7')">7</button>
+            <button onclick="keypadInput('8')">8</button>
+            <button onclick="keypadInput('9')">9</button>
+            <button class="keypad-action" onclick="keypadClear()">C</button>
+            <button onclick="keypadInput('0')">0</button>
+            <button class="keypad-action" onclick="keypadBackspace()">⌫</button>
+        </div>
+
+        <button class="keypad-set" onclick="setCustomTime()">Set Timer 🌸</button>
+    </div>
+</div>
+
+<!-- FLOATING MUSIC PLAYER -->
+<div class="music-player" id="musicPlayer">
+    <div class="player-header" id="playerHeader">
+        <span class="player-grab">⋮⋮</span>
+        <span class="player-title" id="playerTitle">Song</span>
+        <button class="player-close" onclick="closePlayer()" title="Close">×</button>
+    </div>
+    <div class="player-body">
+        <div class="player-icon" id="playerIcon">🎵</div>
+        <div class="player-progress">
+            <div class="player-bar" id="playerBar"></div>
+        </div>
+        <div class="player-time" id="playerTime">0:00</div>
+        <div class="player-controls">
+            <button onclick="restartSong()" title="Restart">⏮</button>
+            <button class="player-play" id="playerPlayBtn" onclick="togglePlay()" title="Pause/Play">⏸</button>
+            <button id="playerLoopBtn" onclick="toggleLoop()" title="Replay (loop)">🔁</button>
+        </div>
+        <div class="player-error" id="playerError" style="display:none;">
+            MP3 not found! Save it as the correct filename in the Pomofrog folder. 🎶
+        </div>
+    </div>
+</div>
+
+<!-- POMOFROG IS MAIN REMINDER (Bear theme only) -->
+<div class="main-reminder">Remember, Pomofrog is MAIN! ✨</div>
+
+<!-- SECRET ADMIN REMOTE (Aliya only) -->
+<div class="admin-remote" id="adminRemote">
+    <div class="admin-header">
+        <div class="admin-led"></div>
+        <span class="admin-title">✨ Aliya's Remote ✨</span>
+        <button class="admin-hide" onclick="hideAdminPanel()" title="Hide">×</button>
+    </div>
+    <div class="admin-screen">
+        <div class="admin-row">
+            <span class="admin-label" id="adminFrogLabel">🐸 Frogs</span>
+            <div class="admin-ctrls">
+                <button onclick="adminChange('frogs', -1)">−</button>
+                <span class="admin-val" id="adminFrogVal">0</span>
+                <button onclick="adminChange('frogs', 1)">+</button>
+            </div>
+        </div>
+        <div class="admin-row">
+            <span class="admin-label">💛 Coins</span>
+            <div class="admin-ctrls">
+                <button onclick="adminChange('coins', -1)">−</button>
+                <span class="admin-val" id="adminCoinVal">0</span>
+                <button onclick="adminChange('coins', 1)">+</button>
+            </div>
+        </div>
+    </div>
+    <div class="admin-presets">
+        <button id="adminPresetFrogs" onclick="adminChange('frogs', 5)">+5 🐸</button>
+        <button onclick="adminChange('coins', 10)">+10 💛</button>
+        <button class="admin-reset" onclick="adminReset()">Reset</button>
+    </div>
+    <button class="admin-fly-btn" onclick="spawnFly()">🪰 Activate the Fly</button>
+</div>
+
+<!-- THEME WELCOME OVERLAY -->
+<div class="theme-welcome" id="themeWelcome">
+    <div class="theme-welcome-big" id="themeWelcomeBig">WELCOME TO POMOBEAR!</div>
+    <div class="theme-welcome-sub" id="themeWelcomeSub">you can switch anytime</div>
+</div>
+
+<!-- TIME'S UP MESSAGE -->
+<div class="times-up" id="timesUp">Time's Up!</div>
+
+<!-- MAIN -->
+<div class="container">
+
+    <div class="quote-banner" id="quoteBanner">✨ Loading quote... ✨</div>
+
+    <div class="frog" onclick="frogTap()">
+        🐸
+        <div class="frog-speech" id="frogSpeech"></div>
+    </div>
+
+    <div class="timer" id="timer">25:00</div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchMode(25,this)">Pomodoro</button>
+        <button class="tab" onclick="switchMode(5,this)">Short Break</button>
+        <button class="tab" onclick="switchMode(15,this)">Long Break</button>
+    </div>
+
+    <div class="controls">
+        <button onclick="startTimer()">Start</button>
+        <button onclick="pauseTimer()">Pause</button>
+        <button onclick="resetTimer()">Reset</button>
+    </div>
+
+    <button class="heart-btn" onclick="setFiveSeconds()">
+        <span class="heart">💗</span>
+        <span class="heart-label">5 SECONDS</span>
+    </button>
+
+    <button class="lotus-btn" onclick="openKeypad()">
+        <span class="lotus">🪷</span>
+        <span>Adjust Timer</span>
+    </button>
+
+    <div class="todo-box">
+        <div class="todo-title">✨ Froggy To-Do ✨</div>
+
+        <div class="todo-input">
+            <input id="todoInput" type="text" placeholder="Add a cozy task...">
+            <button onclick="addTodo()">+</button>
+        </div>
+
+        <ul id="todoList"></ul>
+
+        <button class="clear-btn" onclick="clearCompleted()">🧹 Clear Finished</button>
+    </div>
+
+    <div class="pomofrog-sign">
+        <span class="sign-heart">💗</span>
+        <span class="letter">P</span><span class="letter">o</span><span class="letter">m</span><span class="letter">o</span><span class="letter">f</span><span class="letter">r</span><span class="letter">o</span><span class="letter">g</span>
+        <span class="sign-heart">💗</span>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
