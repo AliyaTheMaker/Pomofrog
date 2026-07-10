@@ -66,6 +66,14 @@ ringAudio.volume = 1.0;
 ringAudio.preload = "auto";
 
 function playRing(seconds){
+    // Pause the study music so we can hear the frog croak
+    const musicWasPlaying = !playerAudio.paused && playerAudio.src && !playerAudio.ended;
+    if(musicWasPlaying){
+        playerAudio.pause();
+        const playBtn = document.getElementById("playerPlayBtn");
+        if(playBtn) playBtn.textContent = "▶";
+    }
+
     ringAudio.currentTime = 0;
     const p = ringAudio.play();
     if(p && p.catch){
@@ -74,6 +82,13 @@ function playRing(seconds){
     setTimeout(() => {
         ringAudio.pause();
         ringAudio.currentTime = 0;
+        // Resume study music after the ring
+        if(musicWasPlaying){
+            const resume = playerAudio.play();
+            if(resume && resume.catch) resume.catch(() => {});
+            const playBtn = document.getElementById("playerPlayBtn");
+            if(playBtn) playBtn.textContent = "⏸";
+        }
     }, seconds * 1000);
 }
 
@@ -874,8 +889,8 @@ const THEMES = {
         tapMessages: [
             "Ribbit! I could do well with a few flies... 🪰",
             "RIBBIT! Keep working while I catch some flies <em>*stomach rumbles*</em> 😋",
-            "Psst — try <b>Flappy Frog</b>! Grab ⭐ for 2× points, 🛡️ for shield, 🐌 for slow-mo!",
-            "Check your <b>Pond</b> 🪷 — click a frog to make me croak, click the water for ripples!",
+            "Psst — try <b>Flappy Frog</b>! Grab ⭐ for 2× points and 🛡️ for shield!",
+            "Check your <b>Pond</b> 🪷 — click a frog to make it hop, click the water for ripples!",
             "Every pomodoro grows a flower 🌷 in your garden! Come check it out!",
             "Play <b>Memory Match</b> 🧠 or <b>Catch the Fly</b> 🪰 in Mini Games!",
             "Unlock <b>achievements</b> 🏆 by focusing more — tap 📊 to see your stats!",
@@ -930,8 +945,8 @@ const THEMES = {
         tapMessages: [
             "Brr! I could really go for some salmon... 🐟",
             "GROAR! Keep working while I find some fish <em>*stomach rumbles*</em> 😋",
-            "Psst — try <b>Flappy Bear</b>! Grab ⭐ for 2× points, 🛡️ for shield, 🐌 for slow-mo!",
-            "Check your <b>Snowy Den</b> ❄️ — click a bear to make me groar, click the ice for ripples!",
+            "Psst — try <b>Flappy Bear</b>! Grab ⭐ for 2× points and 🛡️ for shield!",
+            "Check your <b>Snowy Den</b> ❄️ — click a bear to make it hop, click the ice for ripples!",
             "Every pomodoro grows a snowflake ❄️ in your garden! Come check it out!",
             "Play <b>Memory Match</b> 🧠 or <b>Catch the Snowflake</b> ❄️ in Mini Games!",
             "Unlock <b>achievements</b> 🏆 by focusing more — tap 📊 to see your stats!",
@@ -962,7 +977,6 @@ const LEARN_CONTENT = {
         <ul class="learn-list">
             <li>⭐ <b>Star</b> – DOUBLE POINTS for 5 seconds!</li>
             <li>🛡️ <b>Shield</b> – invincibility, crash through pipes for 3 seconds!</li>
-            <li>🐌 <b>Slow-mo</b> – pipes crawl for 5 seconds so you can react.</li>
         </ul>
         <p>Your best score is saved forever as your 🏆 <b>High Score</b>!</p>
 
@@ -974,7 +988,7 @@ const LEARN_CONTENT = {
 
         <h3>🪷 Interactive Pond</h3>
         <ul class="learn-list">
-            <li>👆 <b>Click a frog</b> in your pond — it jumps and croaks!</li>
+            <li>👆 <b>Click a frog</b> in your pond — it hops for you!</li>
             <li>💧 <b>Click the water</b> — a pretty ripple appears!</li>
             <li>🌷 Every pomodoro also plants a <b>flower in your garden</b> — watch it grow over time!</li>
         </ul>
@@ -1024,7 +1038,6 @@ const LEARN_CONTENT = {
         <ul class="learn-list">
             <li>⭐ <b>Star</b> – DOUBLE POINTS for 5 seconds!</li>
             <li>🛡️ <b>Shield</b> – invincibility, crash through pipes for 3 seconds!</li>
-            <li>🐌 <b>Slow-mo</b> – pipes crawl for 5 seconds so you can react.</li>
         </ul>
         <p>Your best score is saved forever as your 🏆 <b>High Score</b>!</p>
 
@@ -1036,7 +1049,7 @@ const LEARN_CONTENT = {
 
         <h3>❄️ Interactive Snowy Den</h3>
         <ul class="learn-list">
-            <li>👆 <b>Click a bear</b> in your den — it jumps and groars!</li>
+            <li>👆 <b>Click a bear</b> in your den — it hops for you!</li>
             <li>💧 <b>Click the ice</b> — a pretty ripple appears!</li>
             <li>❄️ Every pomodoro also plants a <b>snowflake in your garden</b> — watch it grow over time!</li>
         </ul>
@@ -1325,7 +1338,6 @@ function renderPond(){
             frog.classList.remove("jumping");
             void frog.offsetWidth;
             frog.classList.add("jumping");
-            playPondCroak();
         };
         pond.appendChild(frog);
     }
@@ -1756,8 +1768,7 @@ let flappyActiveEffect = null;
 
 const POWERUP_TYPES = [
     { type: "star",   emoji: "⭐",  duration: 300, color: "#ffe66d" },
-    { type: "shield", emoji: "🛡️", duration: 180, color: "#a8dadc" },
-    { type: "slow",   emoji: "🐌",  duration: 300, color: "#c8b6ff" }
+    { type: "shield", emoji: "🛡️", duration: 180, color: "#a8dadc" }
 ];
 
 const FLAPPY_GRAVITY = 0.32;
@@ -1929,10 +1940,9 @@ function flappyLoop(){
         if(flappyActiveEffect && flappyFrame > flappyActiveEffect.endFrame){
             flappyActiveEffect = null;
         }
-        const isSlow  = flappyActiveEffect?.type === "slow";
         const isShield= flappyActiveEffect?.type === "shield";
         const isStar  = flappyActiveEffect?.type === "star";
-        const pipeSpeedNow = isSlow ? FLAPPY_PIPE_SPEED * 0.5 : FLAPPY_PIPE_SPEED;
+        const pipeSpeedNow = FLAPPY_PIPE_SPEED;
 
         flappyFrog.vy += FLAPPY_GRAVITY;
         flappyFrog.y += flappyFrog.vy;
