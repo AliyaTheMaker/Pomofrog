@@ -1771,12 +1771,12 @@ const POWERUP_TYPES = [
     { type: "shield", emoji: "🛡️", duration: 180, color: "#a8dadc" }
 ];
 
-const FLAPPY_GRAVITY = 0.55;
-const FLAPPY_JUMP = -8.5;
+const FLAPPY_GRAVITY = 0.8;
+const FLAPPY_JUMP = -9.5;
 const FLAPPY_PIPE_W = 50;
-const FLAPPY_PIPE_GAP = 160;
-const FLAPPY_PIPE_SPEED = 3.4;
-const FLAPPY_PIPE_INTERVAL = 100;
+const FLAPPY_PIPE_GAP = 165;
+const FLAPPY_PIPE_SPEED = 4.6;
+const FLAPPY_PIPE_INTERVAL = 82;
 const FLAPPY_W = 280;
 const FLAPPY_H = 400;
 
